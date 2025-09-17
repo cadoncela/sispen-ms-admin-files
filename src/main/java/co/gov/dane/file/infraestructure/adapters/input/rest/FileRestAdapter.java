@@ -1,0 +1,27 @@
+package co.gov.dane.file.infraestructure.adapters.input.rest;
+
+import co.gov.dane.file.application.ports.input.FileServicePort;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
+/**
+ * @author Oliver & Ragnar
+ */
+@CrossOrigin(origins = { "http://localhost:4200", "*" })
+@RequiredArgsConstructor
+@RestController
+@PreAuthorize("hasRole('sispen_admin')")
+public class FileRestAdapter {
+
+    private final FileServicePort servicePort;
+
+    @PostMapping("/v1/api/upload/{codInterno}")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String codInterno) throws IOException {
+        return ResponseEntity.ok(servicePort.uploadFile(codInterno, file));
+    }
+}
