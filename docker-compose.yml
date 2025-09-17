@@ -1,0 +1,32 @@
+services:
+
+  springapp:
+    build: 
+      context: .
+    network_mode: "host"
+    container_name: sispen-ms-admin-files
+    restart: no
+    command: sh run-with-watch.sh
+    volumes:
+      - ./www:/app
+      - ./storage:/app/storage
+      - maven:/root/.m2
+    environment:
+      - SERVER_PORT=28085
+      - KEYCLOAK_BASE_URL=http://localhost:9090
+      - KEYCLOAK_REALM=dane-realm-dev
+      - KEYCLOAK_CLIENT_ID=sispen-client-api
+      - KEYCLOACK_USER_NAME_ATTRIBUTE=
+      - CORS_ALLOWED_ORIGINS=*
+      - KEYCLOAK_ADMIN_USERNAME=cdoncel
+      - KEYCLOAK_ADMIN_PASSWORD=keyPa$$
+      - KEY_CLOAK_CLIENT_SECRET=O1uu6FalYXGxDPkKzfjRjiGFrUEZdfyW
+
+      - UPLOAD_PATH=/app/storage
+
+    ports:
+      - 28085:8080
+      - 8000:8000
+
+volumes:
+  maven:
