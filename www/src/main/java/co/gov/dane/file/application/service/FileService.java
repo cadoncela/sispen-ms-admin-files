@@ -1,9 +1,13 @@
 package co.gov.dane.file.application.service;
 
 import co.gov.dane.file.application.ports.input.FileServicePort;
+import co.gov.dane.file.domain.exception.FileNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +21,7 @@ import java.util.stream.Collectors;
 /**
  * @author Oliver & Ragnar
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileService implements FileServicePort {
@@ -35,7 +40,6 @@ public class FileService implements FileServicePort {
         if(Files.exists(filePathValidator)){
             return "Error. El archivo ya existe";
         }
-
         Path uploadPath = Paths.get(baseUrl);
         if (!Files.exists(uploadPath)) {
             try {
@@ -47,6 +51,26 @@ public class FileService implements FileServicePort {
         Path filePath = uploadPath.resolve(urlFile);
         // Escribir el contenido del archivo en el disco
         Files.write(filePath, file.getBytes());
-        return filePath.toAbsolutePath().toString();
+        filePath.getFileName().toString();
+
+        return filePath.getFileName().toString();
+        //return filePath.toAbsolutePath().toString();
+    }
+
+    @Override
+    public Resource downloadFile(String file) {
+        try{
+            log.info("Entrando a descargar service");
+            Path filePath = Paths.get(baseUrl).resolve(file).normalize();
+           // Path filePath = Paths.get(url).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists() || resource.isReadable()){
+                return resource;
+            } else {
+                throw new FileNotFoundException();
+            }
+        } catch (Exception e) {
+            throw new FileNotFoundException();
+        }
     }
 }

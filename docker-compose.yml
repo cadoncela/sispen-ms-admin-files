@@ -22,8 +22,8 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=keyPa$$
       - KEY_CLOAK_CLIENT_SECRET=O1uu6FalYXGxDPkKzfjRjiGFrUEZdfyW
 
-      - UPLOAD_PATH=/app/storage
-
+      - UPLOAD_PATH=/app/storage/dane/sispen/
+    user: 1000:1000
     ports:
       - 28085:8080
       - 8000:8000
